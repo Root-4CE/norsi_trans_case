@@ -14,12 +14,12 @@
   - name: Собираем логи и пакуем в файлы
 
     shell:
-      chdir: /home/bad/
+      chdir: /home/user01/
       cmd: "{{item}}"
     loop:
       - c_time=$(date +"%s")
       - t_time=$(($c_date - 18000))
-      - journalctl -ex -S "$(date -d "-5 hours" +"%Y-%m-%d %T")" -U "$(date +"%Y-%m-%d %T")" | grep bad  | grep COMMAND | tee u_file
+      - journalctl -ex -S "$(date -d "-5 hours" +"%Y-%m-%d %T")" -U "$(date +"%Y-%m-%d %T")" | grep user01  | grep COMMAND | tee u_file
       - echo $(find /etc/ -mmin -300 -type f) | tee c_file
     register: result_of_shell
     when: result_of_scan.stdout != ""
@@ -27,15 +27,15 @@
   - name: Копируем файлы на машину администратора
 
     fetch:
-      src: /home/bad/c_file
-      dest: /home/bad/cheking/{{ansible_hostname}}/c_file
+      src: /home/user01/c_file
+      dest: /home/user01/cheking/{{ansible_hostname}}/c_file
       flat: yes
 
   - name:
 
     fetch:
-      src: /home/bad/u_file
-      dest: /home/bad/cheking/{{ansible_hostname}}/u_file
+      src: /home/user01/u_file
+      dest: /home/user01/cheking/{{ansible_hostname}}/u_file
       flat: yes
 
     when: result_of_shell is not skipped
@@ -43,7 +43,7 @@
   - name: Чистим за собой
 
     file:
-      path: /home/bad/{{item}}
+      path: /home/user01/{{item}}
       state: absent
     loop:
       - c_file
