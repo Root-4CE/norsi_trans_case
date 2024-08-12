@@ -1,0 +1,29 @@
+---
+
+- name: НОРСИ ТРАНС ЗАДАЧА 3
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Установка пакета с ПО если RH-based система
+
+    yum:
+      name: "{{ po_packages }}"
+      state: latest
+      po_packages:
+        - first_po_package
+        - sec_po_package
+
+    when: ansible_os_family == "RedHat"
+
+  - name: Установка пакета с ПО если Deb-based система
+
+    apt:
+      name: "{{ po_packages }}"
+      state: latest
+      po_packages:
+        - first_po_package
+        - second_po_package
+
+    when: ansible_os_family == "Debian"
