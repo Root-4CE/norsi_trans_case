@@ -11,7 +11,7 @@
       cmd: find /etc/ -mmin -300 -type f
     register: result_of_scan
 
-  - name: Собираем логи и пакуем в файлы
+  - name: Собираем  списки измененых файлов, логи и пакуем в файлы
 
     shell:
       chdir: /home/user01/
