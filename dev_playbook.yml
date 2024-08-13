@@ -1,0 +1,43 @@
+---
+
+- name: Кейс НОРСИ-ТРАНС ЗАДАЧА 3
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Копирование скрипта на сервер
+      ansible.builtin.copy:
+        src: /home/user01/scripts/yum_update_pckg02.sh
+        dest: /home/user01/scripts/yum_update_pckg02.sh
+        owner: user01
+        mode: u=rwx,g=rx,o=r
+
+    - name: Creates a cron file under /etc/cron.d
+      ansible.builtin.cron:
+        name: yum autoupdate
+        minute: "0"
+        hour: "01"
+        user: root
+        job: "bash /home/user01/scripts/yum_update_pckg02.sh"
+        cron_file: yum_update_pckg02
+
+      when: ansible_os_family == "RedHat"
+      
+    - name: Копирование скрипта на сервер
+      ansible.builtin.copy:
+        src: /home/user01/scripts/apt_update_package.sh
+        dest: /home/user01/scripts/yum_update_package2.sh
+        owner: user01
+        mode: u=rwx,g=rx,o=r
+
+    - name: Creates a cron file under /etc/cron.d
+      ansible.builtin.cron:
+        name: apt autoupdate
+        minute: "0"
+        hour: "01"
+        user: root
+        job: "bash /home/user01/scripts/yum_update_package2.sh"
+        cron_file: apt_update_package2
+
+      when: ansible_os_family == "Debian"
